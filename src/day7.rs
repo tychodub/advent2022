@@ -6,7 +6,7 @@ pub fn day7() {
     let mut input = File::open("inputday7").expect("could not find file");
     let mut text = String::new();
     input.read_to_string(&mut text).expect("failure reading file");
-    let mut root = FileStructure::new();
+    let mut root = FileRoot::new();
     for line in text.lines() {
         if line.starts_with("$") {
             //println!("cash money: {}", line);
@@ -42,15 +42,15 @@ pub fn day7() {
     println!("part1: {}, part2: {}", answer1, answer2);
 }
 
-struct FileStructure<'a> {
+struct FileRoot<'a> {
     files: Vec<u32>,
     directories: HashMap<&'a str, FileStructure<'a>>,
     current_dir: Vec<&'a str>,
 }
 
-impl<'a> FileStructure<'a> {
-    fn new() -> FileStructure<'a> {
-        FileStructure {
+impl<'a> FileRoot<'a> {
+    fn new() -> FileRoot<'a> {
+        FileRoot {
             files: Vec::new(),
             directories: HashMap::new(),
             current_dir: Vec::new(),
@@ -114,6 +114,53 @@ impl<'a> FileStructure<'a> {
             }
             current.files.push(size);
         }
+    }
+
+    fn part1_answer(&self, answer: &mut u32) {
+        let own_size = self.calculate_size();
+        if own_size <= 100000 {
+            *answer += own_size;
+        }
+        for value in self.directories.values() {
+            value.part1_answer(answer);
+        }
+    }
+
+    fn part2_answer(&self, answer: &mut u32, required: u32) {
+        let own_size = self.calculate_size();
+        if own_size >= required {
+            if *answer > own_size {
+                *answer = own_size;
+            }
+            for value in self.directories.values() {
+                value.part2_answer(answer, required);
+            }
+        }
+    }
+}
+
+struct FileStructure<'a> {
+    files: Vec<u32>,
+    directories: HashMap<&'a str, FileStructure<'a>>,
+}
+
+impl<'a> FileStructure<'a> {
+    fn new() -> FileStructure<'a> {
+        FileStructure {
+            files: Vec::new(),
+            directories: HashMap::new(),
+        }
+    }
+
+    fn calculate_size(&self) -> u32 {
+        let mut sum = 0;
+        for file in &self.files {
+            sum += file;
+        }
+        for value in self.directories.values() {
+            sum += value.calculate_size();
+        }
+        sum
     }
 
     fn part1_answer(&self, answer: &mut u32) {
