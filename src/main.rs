@@ -1,5 +1,5 @@
 use advent2022::*;
 
 fn main() {
-    day7::day7();
+    day8::day8_part1();
 }
