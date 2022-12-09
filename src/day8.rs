@@ -84,7 +84,7 @@ impl Trix {
     fn answer_part1(&self) {
         let mut answer = 0;
         let mut row = 0;
-        let mut column = 0;
+        let mut column;
         while row < self.matrix.len() {
             column = 0;
             while column < self.matrix.get(0).unwrap().len() {
@@ -161,7 +161,7 @@ impl Trix {
     fn answer_part2(&self) {
         let mut answer = 0;
         let mut row = 0;
-        let mut column = 0;
+        let mut column;
         while row < self.matrix.len() {
             column = 0;
             while column < self.matrix.get(0).unwrap().len() {
